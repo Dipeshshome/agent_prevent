@@ -1,0 +1,19 @@
+Resident Incident and Risk Summary:
+
+Resident: {resident_name}
+Event Type: {event_type}
+Number of Incidents: {incident_count}
+
+**Incident Summaries**:
+{incident_data}
+
+---
+
+What we learned from these incidents:
+Summarize the key findings from these incidents, focusing on the causes of the falls and any patterns that have emerged.
+
+What can we do to prevent these incidents in the future:
+Provide a detailed set of preventive measures that care home staff can implement to avoid similar incidents for this resident.
+
+Assess the Impact Level:
+For each fall, determine the impact level (No Injury, Minor, Moderate, Major) and provide recommendations accordingly.
