@@ -48,6 +48,7 @@ class GroqLLM(LLM):
             "max_tokens": self.max_tokens,
         }
 
+
 prompt_template = PromptTemplate(
     input_variables=["resident_name", "event_type", "incident_count", "incident_data"],
     template=(
@@ -55,13 +56,16 @@ prompt_template = PromptTemplate(
         "based on past incidents.\n\n"
         "Resident: {resident_name}\n"
         "Event Type: {event_type}\n"
-        "Number of Incidents: {incident_count}\n\n"
+        "Total Number of Incidents Reported: {incident_count}\n\n"
         "Incident Summaries:\n"
         "{incident_data}\n\n"
-        "Please provide a detailed preventive care plan that includes the following sections:\n"
-        "1. **What we learned from the events**\n"
-        "2. **What can we do to prevent this in the future**\n"
-        "3. **Impact Level:** No injury / Minor / Moderate / Major\n\n"
+        "Based on the above incidents, please provide a detailed preventive care plan that includes the following sections:\n"
+        "1. **What we learned from the events**:\n"
+        "   - Highlight common patterns or issues observed across the {incident_count} incidents.\n"
+        "2. **What can we do to prevent this in the future**:\n"
+        "   - List specific strategies or changes that can be implemented to mitigate similar incidents.\n"
+        "3. **Impact Level**:**No injury / Minor / Moderate / Major\n"
+        "   - Assess the potential severity of incidents and categorize them as No injury / Minor / Moderate / Major.\n\n"
         "Ensure that each section is well-articulated and provides actionable insights for care home staff, specifically addressing {resident_name}'s needs and circumstances."
     )
 )
@@ -69,13 +73,16 @@ prompt_template = PromptTemplate(
 def initialize_preventive_agent():
     llm = GroqLLM(api_key=GROQ_API_KEY)
     agent = prompt_template | llm
+    #print('agent',agent)
     return agent
 
-def generate_preventive_plan(agent, resident_id, resident_name, event_type, incident_data):
+def generate_preventive_plan(agent, resident_id, resident_name, event_type, incident_data,incident_count):
     prompt_data = {
         "resident_name": resident_name,
         "event_type": event_type,
-        "incident_count": len(incident_data),
+        "incident_count": incident_count, 
         "incident_data": incident_data
     }
+    #print('data',prompt_data)
+    
     return agent.invoke(prompt_data)
