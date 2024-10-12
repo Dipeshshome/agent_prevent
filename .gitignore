@@ -1,0 +1,6 @@
+.venv
+agents/__pycache__
+__pycache__/config.cpython-312.pyc
+agents/__pycache__/ai_agent.cpython-312.pyc
+agents/__pycache__/fetch_conversations_agent.cpython-312.pyc
+utils/__pycache__/api_utils.cpython-312.pyc

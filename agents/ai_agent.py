@@ -8,7 +8,7 @@ from groq import Groq
 
 class GroqLLM(LLM):
     api_key: str
-    model_name: str = "llama3-8b-8192"
+    model_name: str = "llama-3.1-70b-versatile"
     temperature: float = 0.5
     max_tokens: int = 1024
 
@@ -73,7 +73,6 @@ prompt_template = PromptTemplate(
 def initialize_preventive_agent():
     llm = GroqLLM(api_key=GROQ_API_KEY)
     agent = prompt_template | llm
-    #print('agent',agent)
     return agent
 
 def generate_preventive_plan(agent, resident_id, resident_name, event_type, incident_data,incident_count):
@@ -83,6 +82,5 @@ def generate_preventive_plan(agent, resident_id, resident_name, event_type, inci
         "incident_count": incident_count, 
         "incident_data": incident_data
     }
-    #print('data',prompt_data)
     
     return agent.invoke(prompt_data)
