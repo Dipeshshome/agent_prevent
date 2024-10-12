@@ -2,43 +2,33 @@ import os
 from typing import Optional, List, Mapping, Any
 from langchain.prompts import PromptTemplate
 from langchain.llms.base import LLM
-from pydantic import PrivateAttr
-from config import GROQ_API_KEY
-from groq import Groq
+import openai
+from langchain_openai import ChatOpenAI
 
-class GroqLLM(LLM):
-    api_key: str
-    model_name: str = "llama-3.1-70b-versatile"
+openai.api_key = os.getenv("OPENAI_API_KEY", "")
+
+class OpenAILLM(LLM):
+    model_name: str = "gpt-4"
     temperature: float = 0.5
-    max_tokens: int = 1024
-
-    _client: Any = PrivateAttr()
-
-    def __init__(self, **data):
-        super().__init__(**data)
-        self._client = Groq(api_key=self.api_key)
+    max_tokens: int = 2048
 
     def _call(self, prompt: str, stop: Optional[List[str]] = None) -> str:
-        messages = [
-            {
-                "role": "user",
-                "content": prompt
-            }
-        ]
-
         try:
-            completion = self._client.chat.completions.create(
+            response = openai.ChatCompletion.create(
                 model=self.model_name,
-                messages=messages,
+                messages=[{"role": "user", "content": prompt}],
                 temperature=self.temperature,
+                max_tokens=self.max_tokens,
+                stop=stop
             )
-            return completion.choices[0].message.content
-        except Exception as e:
-            raise Exception(f"Groq SDK Error: {e}")
 
+            return response['choices'][0]['message']['content'].strip()
+        except Exception as e:
+            raise Exception(f"OpenAI API Error: {e}")
+        
     @property
     def _llm_type(self) -> str:
-        return f"groq-{self.model_name}"
+        return f"openai-{self.model_name}"
 
     @property
     def _identifying_params(self) -> Mapping[str, Any]:
@@ -47,7 +37,6 @@ class GroqLLM(LLM):
             "temperature": self.temperature,
             "max_tokens": self.max_tokens,
         }
-
 
 prompt_template = PromptTemplate(
     input_variables=["resident_name", "event_type", "incident_count", "incident_data"],
@@ -71,11 +60,11 @@ prompt_template = PromptTemplate(
 )
 
 def initialize_preventive_agent():
-    llm = GroqLLM(api_key=GROQ_API_KEY)
+    llm = ChatOpenAI(model="gpt-4", api_key=openai.api_key)
     agent = prompt_template | llm
     return agent
 
-def generate_preventive_plan(agent, resident_id, resident_name, event_type, incident_data,incident_count):
+def generate_preventive_plan(agent, resident_id, resident_name, event_type, incident_data, incident_count):
     prompt_data = {
         "resident_name": resident_name,
         "event_type": event_type,
@@ -84,3 +73,4 @@ def generate_preventive_plan(agent, resident_id, resident_name, event_type, inci
     }
     
     return agent.invoke(prompt_data)
+

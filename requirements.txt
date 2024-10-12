@@ -2,3 +2,4 @@ openai
 langchain
 requests
 groq
+langchain_openai

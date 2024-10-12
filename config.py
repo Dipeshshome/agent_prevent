@@ -5,8 +5,7 @@ API_CONFIG = {
     "api_key": None  
 }
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "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")
-
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
 
 def get_api_headers():
     headers = {

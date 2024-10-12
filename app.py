@@ -17,5 +17,5 @@ def main(resident_id, resident_name, event_type):
 if __name__ == "__main__":
     resident_id = "Res_01"
     resident_name = "John Smith"
-    event_type = "Fall"
+    event_type = "Skin integrity"
     main(resident_id, resident_name, event_type)
